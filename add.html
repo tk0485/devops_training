@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Book Add Form</title>
+</head>
+<body>
+<form action='index.php' method ="post" onsubmit="return validation();">
+   <table>
+      <tr>
+         <td>Name:</td>
+         <td><input type="name" name="name" id="name"></td>
+      </tr>
+      <tr>
+         <td>Author:</td>
+         <td><input type="author" name="author" id="author"></td>
+      </tr>
+      <tr>
+         <td>Date of Publish:</td>
+         <td><input type="dop" name="dop" id="dop"></td>
+      </tr>
+      <tr>
+         <td>Description:</td>
+         <td><textarea type="description" name="description" id="description"></textarea></td>
+      </tr>
+      <tr>
+         <td><input type="submit" name="Add"></td>
+      </tr>
+   </table>
+</form><br>
+<font color="red"><div id="eresult"></div></font><br>
+<script type="text/javascript">
+function validation(){
+   var name = document.getElementById('name').value;
+   var author = document.getElementById('author').value;
+   var dop = document.getElementById('dop').value;
+   var description = document.getElementById('description').value;
+   if(name=='' || author=='' || dop=='' || description=='')
+   {
+      document.getElementById("eresult").innerHTML = "All fields are required";
+      return false;
+   }
+   else if (name.length>50)
+   {
+      document.getElementById("eresult").innerHTML = "Name must be 50 characters or less";
+      return false;
+   }
+   else if (author.length>50)
+   {
+      document.getElementById("eresult").innerHTML = "Author must be 50 characters or less";
+      return false;
+   }
+   else if (description.length>200)
+   {
+      document.getElementById("eresult").innerHTML = "Description must be 200 characters or less";
+      return false;
+   }
+   else {
+      return true;
+   }
+}
+</script>
+</body>
+</html>
