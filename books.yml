@@ -1,0 +1,65 @@
+---
+- name: Book
+  hosts: localhost
+  tasks:
+    - name: Create a network
+      docker_network:
+        name: bookNetwork
+        ipam_config:
+          - subnet: 173.18.0.0/16
+            iprange: 173.18.0.0/16
+      tags:
+        - network_config
+        - start
+
+    - name: sql container
+      docker_container:
+        name: sql
+        image: mysql:5.7
+        ports:
+          - 30001:80
+        networks:
+          - name: bookNetwork
+            ipv4_address: 173.18.0.2
+        env:
+          MYSQL_ROOT_PASSWORD=rootpassword
+          MYSQL_USER=rootuser
+          MYSQL_PASSWORD=password
+          MYSQL_DATABASE=test_db
+      tags:
+        - start
+        - startContainers
+
+    - debug: msg="the variable is {{ lookup('env','img_v') }}"
+      tags: start,qq
+
+    - name: Book container
+      docker_container:
+        name: bookInsert
+        image: test:{{ lookup('env','img_v') }}
+        ports:
+          - 83:80
+        networks:
+          - name: bookNetwork
+            ipv4_address: 173.18.0.3
+      tags:
+        - start
+        - startContainers
+
+    - name: cleanup containers
+      docker_container:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - bookInsert
+        - sql
+      tags:
+        - cleanupContainers
+        - cleanup
+
+    - name: Delete Network
+      docker_network:
+        name: bookNetwork
+        state: absent
+      tags:
+        - cleanup
